@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
 
     'use strict';
     // Табы
@@ -22,7 +22,7 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    info.addEventListener('click', function (event) {
+    info.addEventListener('click', (event) => {
         let target = event.target;
         if (target && target.classList.contains('info-header-tab')) {
             for (let i = 0; i < tab.length; i++) {
@@ -140,21 +140,25 @@ window.addEventListener('DOMContentLoaded', function () {
         descriptionBtn = document.querySelectorAll('.description-btn');
 
     descriptionBtn.forEach(element => {
-        element.addEventListener('click', function(){
+        element.addEventListener('click', () => {
             overlay.style.display = 'block';
-            this.classList.add('more-spash');
+            element.classList.add('more-spash');
             document.body.style.overflow = 'hidden';
-        });    
+        });
+        
+        close.addEventListener('click', () => {
+            element.classList.remove('more-spash');
+        });
     });
 
 
-    more.addEventListener('click', function () {
+    more.addEventListener('click', () => {
         overlay.style.display = 'block';
-        this.classList.add('more-spash');
+        more.classList.add('more-spash');
         document.body.style.overflow = 'hidden';
     });
 
-    close.addEventListener('click', function () {
+    close.addEventListener('click', () => {
         overlay.style.display = 'none';
         more.classList.remove('more-spash');
         document.body.style.overflow = '';
