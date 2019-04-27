@@ -145,7 +145,7 @@ window.addEventListener('DOMContentLoaded', () => {
             element.classList.add('more-spash');
             document.body.style.overflow = 'hidden';
         });
-        
+
         close.addEventListener('click', () => {
             element.classList.remove('more-spash');
         });
@@ -170,71 +170,54 @@ window.addEventListener('DOMContentLoaded', () => {
         succes: "Спасибо! Скоро мы с вами свяжемся!",
         failure: 'Что-то пошло не так'
     };
-// Форма в модальном окне
-    let form = document.querySelector('.main-form'),
-        input = form.getElementsByTagName('input'),
-        statusMessage = document.createElement('div');
 
+    // Форма в модальном окне
+    function sendForm(element) {
+        let input = element.getElementsByTagName('input'),
+            statusMessage = document.createElement('div');
         statusMessage.classList.add('status');
 
-        form.addEventListener('submit', (event) => {
+        element.addEventListener('submit', (event) => {
             event.preventDefault();
-            form.appendChild(statusMessage);
+            element.appendChild(statusMessage);
+            let formData = new FormData(element);
 
-            let request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencded');
-
-            let formData = new FormData(form);
-            request.send(formData);
-
-            request.addEventListener('readystatechange', () => {
-                if (request.readyState < 4 ) {
-                    statusMessage.innerHTML = message.loading;
-                } else if ( request.readyState === 4 && request.status == 200 ) {
-                    statusMessage.innerHTML = message.succes; 
-                } else {
-                    statusMessage.innerHTML = message.failure; 
-                }
-            });
-            for (let i=0; i < input.length;i++) {
-                input[i].value = "";
+            function postData(data) {
+                return new Promise(function (resolve, reject) {
+                    let request = new XMLHttpRequest();
+                    request.open('POST', 'server.php');
+                    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencded');
+                    request.onreadystatechange(() => {
+                        if (request.readyState < 4) {
+                            resolve()
+                        } else if (request.readyState === 4 && request.status == 200) {
+                            resolve()
+                        } else {
+                            reject()
+                        }
+                    });
+                    request.send(data);
+                });
             }
+
+            function clearInput() {
+                for (let i = 0; i < input.length; i++) {
+                    input[i].value = "";
+                }
+            }
+
+            postData(formData)
+                .then(() => statusMessage.innerHTML = message.loading)
+                .then(() => statusMessage.innerHTML = message.succes)
+                .catch(() => statusMessage.innerHTML = message.failure)
+                .then(clearInput);
         });
-// Контактная форма
-let contactForm = document.querySelector('.contact-form'),
-contactInput = contactForm.getElementsByTagName('input'),
-contactStatusMessage = document.createElement('div');
-
-contactStatusMessage.classList.add('status');
-
-contactForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    contactForm.appendChild(contactStatusMessage);
-
-    let request = new XMLHttpRequest();
-    request.open('POST', 'server.php');
-    request.setRequestHeader ('Content-Type', 'application/x-www-form-urlencded');
-
-    let formData = new FormData(contactForm);
-    request.send(formData);
-
-    request.addEventListener('readystatechange', () => {
-        if (request.readyState < 4 ) {
-            contactStatusMessage.innerHTML = message.loading;
-        } else if ( request.readyState === 4 && request.status == 200 ) {
-            contactStatusMessage.innerHTML = message.succes; 
-        } else {
-            contactStatusMessage.innerHTML = message.failure; 
-        }
-    });
-    for (let i=0; i < contactInput.length;i++) {
-        contactInput[i].value = "";
     }
+
+    let form = document.querySelector('.main-form'),
+        contactForm = document.querySelector('.contact-form');
+
+    sendForm(form);
+    sendForm(contactForm);
+
 });
-
-
-});
-
-
-
