@@ -23,7 +23,6 @@ inputRub.addEventListener('input', () => {
     request.addEventListener('readystatechange', () => {
         if(request.readyState === 4 && request.status == 200) {
             let data = JSON.parse(request.response);
-
             inputUsd.value = inputRub.value / data.usd;
         } else {
             inputUsd.value = "Что-то пошло не так!";
